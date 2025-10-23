@@ -4,7 +4,7 @@ from decimal import Decimal
 from tempfile import TemporaryDirectory
 import pandas as pd
 import pytest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, PropertyMock, MagicMock
 
 from app.calculator import Calculator
 from app.calculator_repl import calculator_repl
@@ -12,6 +12,7 @@ from app.calculator_config import CalculatorConfig
 from app.exceptions import OperationError, ValidationError
 from app.history import LoggingObserver, AutoSaveObserver
 from app.operations import OperationFactory
+from app.calculation import Calculation
 
 # ---------------------------
 # Fixture for Calculator
@@ -209,3 +210,84 @@ def test_repl_unexpected_exception():
     with patch("app.calculator.Calculator.perform_operation", side_effect=Exception("Unexpected")):
         mock_print = run_repl_with_inputs(["add", "2", "3", "exit"])
         mock_print.assert_any_call("\x1b[31mUnexpected error: Unexpected\x1b[0m")
+
+
+# ---------------------------
+# Additional Calculator Unit Tests
+# ---------------------------
+
+@pytest.fixture
+def calculator_unit():
+    # Reuse temporary directory setup
+    with TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        config = CalculatorConfig(base_dir=temp_path)
+        yield Calculator(config=config)
+
+def test_perform_operation_no_strategy(calculator_unit):
+    # Should raise OperationError if no operation set
+    with pytest.raises(Exception):
+        calculator_unit.perform_operation(1, 2)
+
+def test_perform_operation_validation_error(calculator_unit):
+    op = OperationFactory.create_operation('add')
+    calculator_unit.set_operation(op)
+    with pytest.raises(Exception):
+        calculator_unit.perform_operation('invalid', 2)
+
+def test_undo_redo_empty(calculator_unit):
+    # Should return False if stacks are empty
+    assert not calculator_unit.undo()
+    assert not calculator_unit.redo()
+
+def test_notify_observers_called(calculator_unit):
+    # Create a mock observer
+    observer = MagicMock()
+    calculator_unit.add_observer(observer)
+
+    # Use a valid operation name ("Addition")
+    calc = Calculation('Addition', Decimal(1), Decimal(2))
+
+    # Notify observers
+    calculator_unit.notify_observers(calc)
+
+    # Assert that observer.update was called once with the calculation
+    observer.update.assert_called_once_with(calc)
+
+def test_save_history_empty(calculator_unit):
+    # Should create empty CSV if history is empty
+    calculator_unit.history.clear()
+    with patch("pandas.DataFrame.to_csv") as mock_to_csv:
+        calculator_unit.save_history()
+        mock_to_csv.assert_called_once()
+
+def test_save_history_exception(calculator_unit):
+    with patch("pandas.DataFrame.to_csv", side_effect=Exception("fail")):
+        with pytest.raises(Exception):
+            calculator_unit.save_history()
+
+def test_load_history_file_not_exist():
+    # Create a temp config and calculator
+    with TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        config = CalculatorConfig(base_dir=temp_path)
+
+        # Patch load_history to prevent loading any file
+        with patch.object(Calculator, 'load_history', return_value=None):
+            calc = Calculator(config=config)
+
+            # Patch history_file to a non-existent file
+            with patch.object(config.__class__, 'history_file', new_callable=PropertyMock) as mock_history_file:
+                mock_history_file.return_value = temp_path / "nonexistent_file.csv"
+
+                # Calling load_history now should not raise and history should remain empty
+                calc.load_history()
+                assert calc.history == []
+
+
+def test_init_logging_exception(monkeypatch):
+    # Force logging setup to fail
+    config = CalculatorConfig(base_dir=Path("/tmp"))
+    monkeypatch.setattr("os.makedirs", lambda *args, **kwargs: (_ for _ in ()).throw(Exception("mkdir fail")))
+    with pytest.raises(Exception):
+        Calculator(config=config)
