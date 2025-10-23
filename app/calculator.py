@@ -2,6 +2,8 @@
 # Calculator Class      #
 ########################
 
+# Coded imported from previous module
+
 from decimal import Decimal
 import logging
 import os
