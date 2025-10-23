@@ -11,7 +11,11 @@ from app.operations import (
     Division,
     Power,
     Root,
-    OperationFactory,
+    OperationFactory, 
+    Modulus, 
+    IntDivide, 
+    Percent, 
+    AbsDiff
 )
 
 
@@ -225,3 +229,70 @@ class TestOperationFactory:
 
         with pytest.raises(TypeError, match="Operation class must inherit"):
             OperationFactory.register_operation("invalid", InvalidOperation)
+
+class TestModulus(BaseOperationTest):
+    operation_class = Modulus
+    valid_test_cases = {
+        "normal_mod": {"a": "10", "b": "3", "expected": "1"},
+        "zero_remainder": {"a": "10", "b": "5", "expected": "0"},
+        "negative_dividend": {"a": "-10", "b": "3", "expected": "-1"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "5",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero in modulus is not allowed"
+        },
+    }
+
+
+class TestIntDivide(BaseOperationTest):
+    operation_class = IntDivide
+    valid_test_cases = {
+        "normal_div": {"a": "10", "b": "3", "expected": "3"},
+        "negative_dividend": {"a": "-10", "b": "3", "expected": "-4"},  # correct floor toward -inf
+        "negative_divisor": {"a": "10", "b": "-3", "expected": "-4"},   # correct floor toward -inf
+        "both_negative": {"a": "-10", "b": "-3", "expected": "3"},      # correct floor toward -inf
+        "zero_dividend": {"a": "0", "b": "3", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "5",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero in integer division is not allowed"
+        },
+    }
+
+
+
+class TestIntDivide(BaseOperationTest):
+    operation_class = IntDivide
+    valid_test_cases = {
+        "normal_div": {"a": "10", "b": "3", "expected": "3"},
+        "negative_dividend": {"a": "-10", "b": "3", "expected": "-4"},  # floor rounds toward -inf
+        "negative_divisor": {"a": "10", "b": "-3", "expected": "-4"},   # floor rounds toward -inf
+        "both_negative": {"a": "-10", "b": "-3", "expected": "3"},      # floor rounds toward -inf
+        "zero_dividend": {"a": "0", "b": "3", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "5",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero in integer division is not allowed"
+        },
+    }
+
+
+
+class TestAbsDiff(BaseOperationTest):
+    operation_class = AbsDiff
+    valid_test_cases = {
+        "positive_difference": {"a": "10", "b": "3", "expected": "7"},
+        "negative_difference": {"a": "3", "b": "10", "expected": "7"},
+        "zero_difference": {"a": "5", "b": "5", "expected": "0"},
+        "decimal_difference": {"a": "5.5", "b": "3.3", "expected": "2.2"},
+    }
+    invalid_test_cases = {}  # No invalid cases for absolute difference
