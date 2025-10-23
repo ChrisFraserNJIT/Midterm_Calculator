@@ -87,7 +87,7 @@ class Modulus(Operation):
 
 
 class IntDivide(Operation):
-    """Integer division (floor division)."""
+    """Using floor division for testing"""
     def execute(self, a: Decimal, b: Decimal) -> Decimal:
         self.validate_operands(a, b)
         if b == 0:
