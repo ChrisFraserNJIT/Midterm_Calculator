@@ -29,24 +29,19 @@ This is an advanced command-line calculator application built with Python that i
 
 ### Setup Steps
 
-1. **Clone the Repository**
+1. **Clone the Repository and Make a New Local Directory**
    ```bash
-   git clone https://github.com/ChrisFraserNJIT/Midterm_Calculator.git
-   cd Midterm_Calculator
+   mkdir Midterm_calculator
+   cd Midterm_calculator
+   git clone git@github.com:ChrisFraserNJIT/Assignment5.git
    ```
 
 2. **Create and Activate Virtual Environment**
    
-   **macOS/Linux:**
+   **macOS/Linux: For this project it will be macOS**
    ```bash
    python3 -m venv venv
    source venv/bin/activate
-   ```
-   
-   **Windows:**
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate
    ```
 
 3. **Install Dependencies**
