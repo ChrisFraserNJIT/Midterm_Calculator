@@ -5,7 +5,7 @@
 from decimal import Decimal
 import logging
 
-from colorama import Fore, Style, init
+from colorama import Fore, Style, init # Using Colorama for color coded output
 init(autoreset=True)
 
 from app.calculator import Calculator
