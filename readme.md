@@ -1,264 +1,382 @@
-# 📦 Project Setup
+# Advanced Calculator Application
 
----
+## Project Description
 
-# 🧩 1. Install Homebrew (Mac Only)
+This is an advanced command-line calculator application built with Python that implements multiple design patterns and provides robust error handling, history management, and comprehensive logging capabilities. The calculator supports various arithmetic operations and features a REPL (Read-Eval-Print Loop) interface for interactive use.
 
-> Skip this step if you're on Windows.
+### Key Features
 
-Homebrew is a package manager for macOS.  
-You’ll use it to easily install Git, Python, Docker, etc.
+- **Multiple Arithmetic Operations**: Addition, subtraction, multiplication, division, power, root, modulus, integer division, percentage calculation, and absolute difference
+- **Design Patterns**: 
+  - Factory Pattern for operation management
+  - Memento Pattern for undo/redo functionality
+  - Observer Pattern for logging and auto-save capabilities
+- **History Management**: Complete calculation history with undo/redo support
+- **Data Persistence**: Save and load calculation history using pandas and CSV format
+- **Configuration Management**: Environment-based configuration using .env files
+- **Comprehensive Logging**: Detailed logging of all operations and errors
+- **Robust Error Handling**: Custom exceptions and input validation
+- **CI/CD Pipeline**: Automated testing with GitHub Actions
+- **High Test Coverage**: 90%+ test coverage using pytest
 
-**Install Homebrew:**
+## Installation Instructions
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+### Prerequisites
+
+- Python 3.10 or higher
+- pip (Python package manager)
+- Git
+
+### Setup Steps
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/ChrisFraserNJIT/Midterm_Calculator.git
+   cd Midterm_Calculator
+   ```
+
+2. **Create and Activate Virtual Environment**
+   
+   **macOS/Linux:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+   
+   **Windows:**
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+4. **Configure Environment Variables** (see Configuration Setup below)
+
+## Configuration Setup
+
+### Creating the .env File
+
+Create a `.env` file in the project root directory with the following configuration parameters:
+
+```env
+# Base Directories
+CALCULATOR_LOG_DIR=logs
+CALCULATOR_HISTORY_DIR=history
+
+# History Settings
+CALCULATOR_MAX_HISTORY_SIZE=100
+CALCULATOR_AUTO_SAVE=true
+
+# Calculation Settings
+CALCULATOR_PRECISION=2
+CALCULATOR_MAX_INPUT_VALUE=1000000
+CALCULATOR_DEFAULT_ENCODING=utf-8
+
+# File Paths (optional - will use defaults if not specified)
+CALCULATOR_LOG_FILE=logs/calculator.log
+CALCULATOR_HISTORY_FILE=history/calculator_history.csv
 ```
 
-**Verify Homebrew:**
+### Configuration Parameters Explained
 
-```bash
-brew --version
-```
+| Parameter | Description | Default Value |
+|-----------|-------------|---------------|
+| `CALCULATOR_LOG_DIR` | Directory where log files are stored | `logs` |
+| `CALCULATOR_HISTORY_DIR` | Directory where history files are stored | `history` |
+| `CALCULATOR_MAX_HISTORY_SIZE` | Maximum number of calculations to keep in history | `100` |
+| `CALCULATOR_AUTO_SAVE` | Enable/disable automatic saving of history | `true` |
+| `CALCULATOR_PRECISION` | Number of decimal places for results | `2` |
+| `CALCULATOR_MAX_INPUT_VALUE` | Maximum allowed input value | `1000000` |
+| `CALCULATOR_DEFAULT_ENCODING` | Character encoding for file operations | `utf-8` |
 
-If you see a version number, you're good to go.
+### Important Notes
 
----
+- The application will create the `logs/` and `history/` directories automatically if they don't exist
+- If `.env` file is not present, the application will use default values
+- Ensure proper file permissions for writing logs and history files
 
-# 🧩 2. Install and Configure Git
+## Usage Guide
 
-## Install Git
+### Starting the Calculator
 
-- **MacOS (using Homebrew)**
-
-```bash
-brew install git
-```
-
-- **Windows**
-
-Download and install [Git for Windows](https://git-scm.com/download/win).  
-Accept the default options during installation.
-
-**Verify Git:**
-
-```bash
-git --version
-```
-
----
-
-## Configure Git Globals
-
-Set your name and email so Git tracks your commits properly:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
-```
-
-Confirm the settings:
-
-```bash
-git config --list
-```
-
----
-
-## Generate SSH Keys and Connect to GitHub
-
-> Only do this once per machine.
-
-1. Generate a new SSH key:
-
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-
-(Press Enter at all prompts.)
-
-2. Start the SSH agent:
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-3. Add the SSH private key to the agent:
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-4. Copy your SSH public key:
-
-- **Mac/Linux:**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | pbcopy
-```
-
-- **Windows (Git Bash):**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | clip
-```
-
-5. Add the key to your GitHub account:
-   - Go to [GitHub SSH Settings](https://github.com/settings/keys)
-   - Click **New SSH Key**, paste the key, save.
-
-6. Test the connection:
-
-```bash
-ssh -T git@github.com
-```
-
-You should see a success message.
-
----
-
-# 🧩 3. Clone the Repository
-
-Now you can safely clone the course project:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
----
-
-# 🛠️ 4. Install Python 3.10+
-
-## Install Python
-
-- **MacOS (Homebrew)**
-
-```bash
-brew install python
-```
-
-- **Windows**
-
-Download and install [Python for Windows](https://www.python.org/downloads/).  
-✅ Make sure you **check the box** `Add Python to PATH` during setup.
-
-**Verify Python:**
-
-```bash
-python3 --version
-```
-or
-```bash
-python --version
-```
-
----
-
-## Create and Activate a Virtual Environment
-
-(Optional but recommended)
-
-```bash
-python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate.bat  # Windows
-```
-
-### Install Required Packages
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# 🐳 5. (Optional) Docker Setup
-
-> Skip if Docker isn't used in this module.
-
-## Install Docker
-
-- [Install Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
-- [Install Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
-
-## Build Docker Image
-
-```bash
-docker build -t <image-name> .
-```
-
-## Run Docker Container
-
-```bash
-docker run -it --rm <image-name>
-```
-
----
-
-# 🚀 6. Running the Project
-
-- **Without Docker**:
+Run the application from the project root directory:
 
 ```bash
 python main.py
 ```
 
-(or update this if the main script is different.)
-
-- **With Docker**:
+or
 
 ```bash
-docker run -it --rm <image-name>
+python -m app.calculator
 ```
 
----
+### Available Commands
 
-# 📝 7. Submission Instructions
+The calculator provides an interactive REPL interface with the following commands:
 
-After finishing your work:
+#### Arithmetic Operations
+
+All arithmetic operations require two numeric operands.
+
+| Command | Description | Example | Result |
+|---------|-------------|---------|--------|
+| `add` | Add two numbers | `add 5 3` | `8.00` |
+| `subtract` | Subtract second number from first | `subtract 10 4` | `6.00` |
+| `multiply` | Multiply two numbers | `multiply 6 7` | `42.00` |
+| `divide` | Divide first number by second | `divide 20 4` | `5.00` |
+| `power` | Raise first number to power of second | `power 2 3` | `8.00` |
+| `root` | Calculate nth root of first number | `root 27 3` | `3.00` |
+| `modulus` | Find remainder of division | `modulus 17 5` | `2.00` |
+| `int_divide` | Integer division (quotient only) | `int_divide 17 5` | `3.00` |
+| `percent` | Calculate percentage (a/b)*100 | `percent 25 200` | `12.50` |
+| `abs_diff` | Absolute difference between numbers | `abs_diff 10 15` | `5.00` |
+
+#### History Management Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `history` | Display all calculation history | `history` |
+| `clear` | Clear all calculation history | `clear` |
+| `undo` | Undo the last calculation | `undo` |
+| `redo` | Redo the last undone calculation | `redo` |
+
+#### File Operations Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `save` | Manually save history to CSV file | `save` |
+| `load` | Load history from CSV file | `load` |
+
+#### Utility Commands
+
+| Command | Description |
+|---------|-------------|
+| `help` | Display available commands and usage |
+| `exit` | Exit the calculator application |
+
+### Usage Examples
+
+```
+Welcome to the Advanced Calculator!
+Type 'help' for available commands or 'exit' to quit.
+
+> add 10 5
+Result: 15.00
+
+> power 2 8
+Result: 256.00
+
+> history
+1. add(10, 5) = 15.00
+2. power(2, 8) = 256.00
+
+> undo
+Undone: power(2, 8) = 256.00
+
+> percent 50 200
+Result: 25.00
+
+> save
+History saved successfully to history/calculator_history.csv
+
+> exit
+Goodbye!
+```
+
+### Error Handling
+
+The calculator includes robust error handling for common issues:
+
+- **Division by Zero**: `divide 10 0` → Error message displayed
+- **Invalid Input**: Non-numeric inputs are rejected with helpful messages
+- **Out of Range**: Values exceeding `CALCULATOR_MAX_INPUT_VALUE` are rejected
+- **Invalid Operations**: Unknown commands display available options
+- **File Errors**: Issues with saving/loading files are reported clearly
+
+## Testing Instructions
+
+### Running Tests
+
+Execute the full test suite:
 
 ```bash
-git add .
-git commit -m "Complete Module X"
-git push origin main
+pytest
 ```
 
-Then submit the GitHub repository link as instructed.
+### Running Tests with Coverage
 
----
+Check test coverage:
 
-# 🔥 Useful Commands Cheat Sheet
+```bash
+pytest --cov=app
+```
 
-| Action                         | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install Homebrew (Mac)          | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` |
-| Install Git                     | `brew install git` or Git for Windows installer |
-| Configure Git Global Username  | `git config --global user.name "Your Name"`      |
-| Configure Git Global Email     | `git config --global user.email "you@example.com"` |
-| Clone Repository                | `git clone <repo-url>`                          |
-| Create Virtual Environment     | `python3 -m venv venv`                           |
-| Activate Virtual Environment   | `source venv/bin/activate` / `venv\Scripts\activate.bat` |
-| Install Python Packages        | `pip install -r requirements.txt`               |
-| Build Docker Image              | `docker build -t <image-name> .`                |
-| Run Docker Container            | `docker run -it --rm <image-name>`               |
-| Push Code to GitHub             | `git add . && git commit -m "message" && git push` |
+### Running Tests with Coverage Report
 
----
+Generate a detailed HTML coverage report:
 
-# 📋 Notes
+```bash
+pytest --cov=app --cov-report=html
+```
 
-- Install **Homebrew** first on Mac.
-- Install and configure **Git** and **SSH** before cloning.
-- Use **Python 3.10+** and **virtual environments** for Python projects.
-- **Docker** is optional depending on the project.
+Then open `htmlcov/index.html` in your browser to view the detailed report.
 
----
+### Enforcing Coverage Threshold
 
-# 📎 Quick Links
+Ensure tests meet the 90% coverage requirement:
 
-- [Homebrew](https://brew.sh/)
-- [Git Downloads](https://git-scm.com/downloads)
-- [Python Downloads](https://www.python.org/downloads/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+```bash
+pytest --cov=app --cov-fail-under=90
+```
+
+### Running Specific Test Files
+
+Run tests for specific modules:
+
+```bash
+pytest tests/test_calculator.py
+pytest tests/test_operations.py
+pytest tests/test_calculation.py
+```
+
+### Running Tests with Verbose Output
+
+```bash
+pytest -v
+```
+
+### Test Structure
+
+Tests are organized in the `tests/` directory:
+
+```
+tests/
+├── __init__.py
+├── test_calculator.py       # Calculator class tests
+├── test_calculation.py      # Calculation class tests
+├── test_operations.py       # Operation classes tests
+├── test_history.py          # History management tests
+├── test_memento.py          # Memento pattern tests
+└── test_observers.py        # Observer pattern tests
+```
+
+## CI/CD Information
+
+### GitHub Actions Workflow
+
+This project uses GitHub Actions for Continuous Integration to automatically run tests and enforce code quality standards on every push and pull request to the main branch.
+
+### Workflow Features
+
+- **Automatic Testing**: Runs full test suite on every commit
+- **Coverage Enforcement**: Fails if test coverage drops below 90%
+- **Multi-Python Version Support**: Tests against specified Python versions
+- **Dependency Management**: Automatically installs requirements
+- **Status Badges**: Build status visible in repository
+
+### Workflow Configuration
+
+The workflow is defined in `.github/workflows/python-app.yml` and includes:
+
+1. **Checkout Code**: Retrieves the latest code from the repository
+2. **Setup Python**: Configures the Python environment
+3. **Install Dependencies**: Installs packages from `requirements.txt`
+4. **Run Tests**: Executes pytest with coverage measurement
+5. **Enforce Coverage**: Fails build if coverage < 90%
+
+### Viewing CI/CD Results
+
+- Check the **Actions** tab in the GitHub repository
+- Green checkmark (✓) indicates passing tests
+- Red X (✗) indicates failing tests or insufficient coverage
+- Click on any workflow run to see detailed logs
+
+### Local Pre-Commit Testing
+
+Before pushing code, run tests locally to ensure CI will pass:
+
+```bash
+pytest --cov=app --cov-fail-under=90
+```
+
+## Project Structure
+
+```
+Midterm_Calculator/
+├── app/
+│   ├── __init__.py
+│   ├── calculator.py           # Main Calculator class with REPL
+│   ├── calculation.py          # Calculation data class
+│   ├── calculator_config.py    # Configuration management
+│   ├── calculator_memento.py   # Memento pattern implementation
+│   ├── exceptions.py           # Custom exception classes
+│   ├── history.py              # History management
+│   ├── input_validators.py     # Input validation utilities
+│   ├── operations.py           # Operation classes (Factory pattern)
+│   └── logger.py               # Logging configuration
+├── tests/
+│   ├── __init__.py
+│   ├── test_calculator.py
+│   ├── test_calculation.py
+│   ├── test_operations.py
+│   └── ...
+├── .github/
+│   └── workflows/
+│       └── python-app.yml      # GitHub Actions workflow
+├── .env                        # Environment configuration (not in repo)
+├── .gitignore                  # Git ignore patterns
+├── requirements.txt            # Python dependencies
+├── README.md                   # This file
+└── main.py                     # Application entry point
+```
+
+## Design Patterns Implemented
+
+### Factory Pattern
+- **Location**: `app/operations.py`
+- **Purpose**: Creates operation instances dynamically based on operation type
+- **Benefit**: Easy to add new operations without modifying existing code
+
+### Memento Pattern
+- **Location**: `app/calculator_memento.py`
+- **Purpose**: Implements undo/redo functionality
+- **Benefit**: Maintains calculation history and allows state restoration
+
+### Observer Pattern
+- **Location**: `app/calculator.py` and observer classes
+- **Purpose**: Notifies observers (LoggingObserver, AutoSaveObserver) of new calculations
+- **Benefit**: Decouples calculation logic from logging and persistence
+
+## Dependencies
+
+Key dependencies include:
+
+- `python-dotenv`: Environment variable management
+- `pandas`: Data manipulation and CSV operations
+- `pytest`: Testing framework
+- `pytest-cov`: Coverage measurement
+- Additional dependencies listed in `requirements.txt`
+
+## Contributing
+
+This is an academic project for IS218. For questions or issues:
+
+1. Check existing documentation
+2. Review test files for usage examples
+3. Consult the assignment requirements
+4. Contact the course instructor
+
+## License
+
+This project is created for academic purposes as part of IS218 coursework.
+
+## Author
+
+Chris Fraser - NJIT
+
