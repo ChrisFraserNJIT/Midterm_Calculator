@@ -358,15 +358,6 @@ Key dependencies include:
 - `pytest-cov`: Coverage measurement
 - Additional dependencies listed in `requirements.txt`
 
-## Contributing
-
-This is an academic project for IS218. For questions or issues:
-
-1. Check existing documentation
-2. Review test files for usage examples
-3. Consult the assignment requirements
-4. Contact the course instructor
-
 ## License
 
 This project is created for academic purposes as part of IS218 coursework.
